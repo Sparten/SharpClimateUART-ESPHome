@@ -45,6 +45,7 @@ ClimateTraits SharpAc::traits() {
   traits.add_supported_fan_mode(ClimateFanMode::CLIMATE_FAN_LOW);
   traits.add_supported_fan_mode(ClimateFanMode::CLIMATE_FAN_MEDIUM);
   traits.add_supported_fan_mode(ClimateFanMode::CLIMATE_FAN_HIGH);
+  traits.add_supported_fan_mode(ClimateFanMode::CLIMATE_FAN_FOCUS);
 
   traits.add_supported_mode(ClimateMode::CLIMATE_MODE_OFF);
   traits.add_supported_mode(ClimateMode::CLIMATE_MODE_COOL);
@@ -92,8 +93,10 @@ void SharpAc::publish_update() {
       this->fan_mode = ClimateFanMode::CLIMATE_FAN_MEDIUM;
       break;
     case FanMode::FAN_HIGH:
-    case FanMode::FAN_HIGHEST:
       this->fan_mode = ClimateFanMode::CLIMATE_FAN_HIGH;
+      break;
+    case FanMode::FAN_HIGHEST:
+      this->fan_mode = ClimateFanMode::CLIMATE_FAN_FOCUS;
       break;
     default:
       ESP_LOGD("sharp_ac", "UNKNOWN FAN MODE");
@@ -228,6 +231,9 @@ void SharpAc::control(const ClimateCall &call) {
         this->core_->control_fan(FanMode::FAN_MID);
         break;
       case ClimateFanMode::CLIMATE_FAN_HIGH:
+        this->core_->control_fan(FanMode::FAN_HIGH);
+        break;
+      case ClimateFanMode::CLIMATE_FAN_FOCUS:
         this->core_->control_fan(FanMode::FAN_HIGHEST);
         break;
       default:
