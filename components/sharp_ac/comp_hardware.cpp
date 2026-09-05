@@ -216,8 +216,12 @@ void SharpAc::control(const ClimateCall &call) {
     float temp = call.get_target_temperature().value();
     this->core_->control_temperature((int) temp);
   }
-
-  if (call.get_fan_mode().has_value()) {
+  if(call.has_custom_fan_mode()) {
+    std::string custom_fan = call.get_custom_fan_mode();
+    if (custom_fan == "Highest"){
+      this->core_->control_fan(FanMode::FAN_HIGHEST);
+    }
+  }else if (call.get_fan_mode().has_value()) {
     ClimateFanMode fan_mode = call.get_fan_mode().value();
     switch (fan_mode) {
       case ClimateFanMode::CLIMATE_FAN_AUTO:
@@ -234,16 +238,8 @@ void SharpAc::control(const ClimateCall &call) {
         break;
       case ClimateFanMode::CLIMATE_FAN_FOCUS:  
         break;
-      default:{
-        if(call.has_custom_fan_mode()) {
-          std::string custom_fan = call.get_custom_fan_mode();
-          if (custom_fan == "Highest"){
-            this->core_->control_fan(FanMode::FAN_HIGHEST);
-          }else{
-            ESP_LOGE("sharp_ac", "Unsupported fan mode: %d", (int) fan_mode);
-          }         
-        }
-      }       
+      default:
+            ESP_LOGE("sharp_ac", "Unsupported fan mode: %d", (int) fan_mode);         
     }
   }
 
