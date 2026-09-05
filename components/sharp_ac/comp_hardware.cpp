@@ -84,19 +84,19 @@ void SharpAc::publish_update() {
 
   switch (state.fan) {
     case FanMode::FAN_AUTO:
-      this->custom_fan_mode_ = "Auto";
+      this->set_fan_mode("Auto");
       break;
     case FanMode::FAN_LOW:
-      this->custom_fan_mode_ = "Low";
+      this->set_fan_mode("Low");
       break;
     case FanMode::FAN_MID:
-      this->custom_fan_mode_ = "Medium";
+      this->set_fan_mode("Medium");
       break;
     case FanMode::FAN_HIGH:
-      this->custom_fan_mode_ = "High";
+      this->set_fan_mode("High");
       break;
     case FanMode::FAN_HIGHEST:
-      this->custom_fan_mode_ = "Highest";
+      this->set_fan_mode("Highest");
       break;
     default:
       ESP_LOGD("sharp_ac", "UNKNOWN FAN MODE");
