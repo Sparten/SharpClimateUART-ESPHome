@@ -95,7 +95,7 @@ void SharpAc::publish_update() {
       this->fan_mode = ClimateFanMode::CLIMATE_FAN_HIGH;
       break;
     case FanMode::FAN_HIGHEST:
-      this->set_fan_mode_("highest");
+      this->set_custom_fan_mode_("highest");
       break;
     default:
       ESP_LOGD("sharp_ac", "UNKNOWN FAN MODE");
