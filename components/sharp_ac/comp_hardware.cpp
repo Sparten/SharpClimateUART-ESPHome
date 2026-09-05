@@ -41,11 +41,10 @@ ClimateTraits SharpAc::traits() {
   traits.set_visual_max_temperature(30);
   traits.set_visual_temperature_step(1.0);
 
-  //traits.add_supported_fan_mode(ClimateFanMode::CLIMATE_FAN_AUTO);
-  //traits.add_supported_fan_mode(ClimateFanMode::CLIMATE_FAN_LOW);
-  //traits.add_supported_fan_mode(ClimateFanMode::CLIMATE_FAN_MEDIUM);
-  //traits.add_supported_fan_mode(ClimateFanMode::CLIMATE_FAN_HIGH);
-  //traits.add_supported_fan_mode(ClimateFanMode::CLIMATE_FAN_FOCUS);
+  traits.add_supported_fan_mode(ClimateFanMode::CLIMATE_FAN_AUTO);
+  traits.add_supported_fan_mode(ClimateFanMode::CLIMATE_FAN_LOW);
+  traits.add_supported_fan_mode(ClimateFanMode::CLIMATE_FAN_MEDIUM);
+  traits.add_supported_fan_mode(ClimateFanMode::CLIMATE_FAN_HIGH);
 
   traits.add_supported_mode(ClimateMode::CLIMATE_MODE_OFF);
   traits.add_supported_mode(ClimateMode::CLIMATE_MODE_COOL);
@@ -84,19 +83,19 @@ void SharpAc::publish_update() {
 
   switch (state.fan) {
     case FanMode::FAN_AUTO:
-      this->set_custom_fan_mode_("Auto");
+      this->fan_mode = ClimateFanMode::CLIMATE_FAN_AUTO;
       break;
     case FanMode::FAN_LOW:
-      this->set_custom_fan_mode_("Low");
+      this->fan_mode = ClimateFanMode::CLIMATE_FAN_LOW;
       break;
     case FanMode::FAN_MID:
-      this->set_custom_fan_mode_("Medium");
+      this->fan_mode = ClimateFanMode::CLIMATE_FAN_MEDIUM;
       break;
     case FanMode::FAN_HIGH:
-      this->set_custom_fan_mode_("High");
+      this->fan_mode = ClimateFanMode::CLIMATE_FAN_HIGH;
       break;
     case FanMode::FAN_HIGHEST:
-      this->set_custom_fan_mode_("Highest");
+      this->set_fan_mode_("highest");
       break;
     default:
       ESP_LOGD("sharp_ac", "UNKNOWN FAN MODE");
@@ -218,20 +217,33 @@ void SharpAc::control(const ClimateCall &call) {
     this->core_->control_temperature((int) temp);
   }
 
-  if (call.has_custom_fan_mode()) {
-    std::string custom_fan = call.get_custom_fan_mode();
-    if (custom_fan == "Auto") {
-      this->core_->control_fan(FanMode::FAN_AUTO);
-    }else if(custom_fan == "Low"){
-      this->core_->control_fan(FanMode::FAN_LOW);
-    }else if(custom_fan == "Medium"){
-      this->core_->control_fan(FanMode::FAN_MID);
-    }else if(custom_fan == "High"){
-      this->core_->control_fan(FanMode::FAN_HIGH);
-    }else if(custom_fan == "Highest"){
-      this->core_->control_fan(FanMode::FAN_HIGHEST);
-    }else{
-      ESP_LOGE("sharp_ac", "Unsupported fan mode: %s",  custom_fan.c_str());
+  if (call.get_fan_mode().has_value()) {
+    ClimateFanMode fan_mode = call.get_fan_mode().value();
+    switch (fan_mode) {
+      case ClimateFanMode::CLIMATE_FAN_AUTO:
+        this->core_->control_fan(FanMode::FAN_AUTO);
+        break;
+      case ClimateFanMode::CLIMATE_FAN_LOW:
+        this->core_->control_fan(FanMode::FAN_LOW);
+        break;
+      case ClimateFanMode::CLIMATE_FAN_MEDIUM:
+        this->core_->control_fan(FanMode::FAN_MID);
+        break;
+      case ClimateFanMode::CLIMATE_FAN_HIGH:
+        this->core_->control_fan(FanMode::FAN_HIGH);
+        break;
+      case ClimateFanMode::CLIMATE_FAN_FOCUS:  
+        break;
+      default:{
+        if(call.has_custom_fan_mode()) {
+          std::string custom_fan = call.get_custom_fan_mode().value();
+          if (custom_fan == "Highest"){
+            this->core_->control_fan(FanMode::FAN_HIGHEST);
+          }else{
+            ESP_LOGE("sharp_ac", "Unsupported fan mode: %d", (int) fan_mode);
+          }         
+        }
+      }       
     }
   }
 
@@ -281,9 +293,8 @@ void SharpAc::set_vane_horizontal(SwingHorizontal val) { this->core_->set_vane_h
 void SharpAc::set_vane_vertical(SwingVertical val) { this->core_->set_vane_vertical(val); }
 
 void SharpAc::setup() {
-  //std::vector<const char *> custom_modes = {"Auto", "Low", "Medium", "High", "Highest"};
-  this->set_supported_custom_fan_modes({"Auto", "Low", "Medium", "High", "Highest"});
   this->core_->setup();
+  this->set_supported_custom_fan_modes({"Highest"}); 
   if (this->connection_status_sensor_ != nullptr) {
     this->connection_status_sensor_->publish_state("Disconnected");
   }
