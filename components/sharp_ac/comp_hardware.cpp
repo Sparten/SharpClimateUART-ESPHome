@@ -236,7 +236,7 @@ void SharpAc::control(const ClimateCall &call) {
         break;
       default:{
         if(call.has_custom_fan_mode()) {
-          std::string custom_fan = call.get_custom_fan_mode().value();
+          std::string custom_fan = call.get_custom_fan_mode();
           if (custom_fan == "Highest"){
             this->core_->control_fan(FanMode::FAN_HIGHEST);
           }else{
@@ -294,7 +294,7 @@ void SharpAc::set_vane_vertical(SwingVertical val) { this->core_->set_vane_verti
 
 void SharpAc::setup() {
   this->core_->setup();
-  this->set_supported_custom_fan_modes({"Highest"}); 
+  this->set_supported_custom_fan_modes("Highest"); 
   if (this->connection_status_sensor_ != nullptr) {
     this->connection_status_sensor_->publish_state("Disconnected");
   }
