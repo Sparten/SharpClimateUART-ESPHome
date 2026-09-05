@@ -221,8 +221,7 @@ void SharpAc::control(const ClimateCall &call) {
   if (call.has_custom_fan_mode()) {
     std::string custom_fan = call.get_custom_fan_mode();
     if (custom_fan == "Auto") {
-      case "Auto":
-        this->core_->control_fan(FanMode::FAN_AUTO);
+      this->core_->control_fan(FanMode::FAN_AUTO);
     }else if(custom_fan == "Low"){
       this->core_->control_fan(FanMode::FAN_LOW);
     }else if(custom_fan == "Medium"){
