@@ -282,7 +282,7 @@ void SharpAc::set_vane_vertical(SwingVertical val) { this->core_->set_vane_verti
 
 void SharpAc::setup() {
   //std::vector<const char *> custom_modes = {"Auto", "Low", "Medium", "High", "Highest"};
-  this->set_supported_custom_fan_modes("Auto", "Low", "Medium", "High", "Highest");
+  this->set_supported_custom_fan_modes({"Auto", "Low", "Medium", "High", "Highest"});
   this->core_->setup();
   if (this->connection_status_sensor_ != nullptr) {
     this->connection_status_sensor_->publish_state("Disconnected");
