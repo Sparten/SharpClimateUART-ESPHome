@@ -86,7 +86,7 @@ void SharpAc::publish_update() {
 
   bool fanmode_set = false;
   for (const auto &mode_entry : CUSTOM_CLIMATE_FAN_MODES_BY_STR) {
-    if (state.fan, mode_entry.value) {
+    if (state.fan == mode_entry.value) {
       this->set_custom_fan_mode_(mode_entry.str);
       fanmode_set = true;
     }
@@ -216,7 +216,7 @@ void SharpAc::control(const ClimateCall &call) {
     std::string custom_fan_mode = call.get_custom_fan_mode();   
     for (const auto &mode_entry : CUSTOM_CLIMATE_FAN_MODES_BY_STR) {
       if (custom_fan_mode == mode_entry.str) {
-        this->core_->control_fan(mode_entry.value);
+        this->core_->control_fan(reinterpret_cast<FanMode>(mode_entry.value));
         fanmode_set = true;
       }
     }
