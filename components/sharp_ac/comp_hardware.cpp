@@ -14,7 +14,7 @@ struct StringToUint8 {
   const uint8_t value;
 };
 constexpr StringToUint8 CUSTOM_CLIMATE_FAN_MODES_BY_STR[] = {
-    {"Auto", FanMode::AUTO},         {"Low", FanMode::FAN_MID},       {"Medium", FanMode::FAN_MID},
+    {"Auto", FanMode::FAN_AUTO},         {"Low", FanMode::FAN_MID},       {"Medium", FanMode::FAN_MID},
     {"High", FanMode::FAN_HIGH},      {"Highest", FanMode::FAN_HIGHEST},
 };
 void ESPHomeStateCallback::on_state_update() {
