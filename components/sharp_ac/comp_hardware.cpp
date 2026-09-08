@@ -222,18 +222,18 @@ void SharpAc::control(const ClimateCall &call) {
   }
   if(call.has_custom_fan_mode()) {
     const char *mode = call.get_custom_fan_mode();
-    if (strcmp(mode, "Auto") == 0){
-      this->core_->control_fan(FanMode::FAN_AUTO);
-    if (strcmp(mode, "Low") == 0){
+    if (strcmp(mode, "Auto") == 0)
+      this->core_->control_fan(FanMode::FAN_AUTO);                           
+    if (strcmp(mode, "Low") == 0)
       this->core_->control_fan(FanMode::FAN_LOW);
-    if (strcmp(mode, "Medium") == 0){
+    if (strcmp(mode, "Medium") == 0)
       this->core_->control_fan(FanMode::FAN_MID);
-    if (strcmp(mode, "High") == 0){
+    if (strcmp(mode, "High") == 0)
       this->core_->control_fan(FanMode::FAN_HIGH);
-    if (strcmp(mode, "Highest") == 0){
+    if (strcmp(mode, "Highest") == 0)
       this->core_->control_fan(FanMode::FAN_HIGHEST);
     }
-  }
+  
   /*else if (call.get_fan_mode().has_value()) {
     ClimateFanMode fan_mode = call.get_fan_mode().value();
     switch (fan_mode) {
