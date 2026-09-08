@@ -217,12 +217,8 @@ void SharpAc::control(const ClimateCall &call) {
     float temp = call.get_target_temperature().value();
     this->core_->control_temperature((int) temp);
   }
-  if(call.has_custom_fan_mode()) {
-    std::string custom_fan = call.get_custom_fan_mode();
-    if (custom_fan == "Highest"){
-      this->core_->control_fan(FanMode::FAN_HIGHEST);
-    }
-  }else if (call.get_fan_mode().has_value()) {
+
+  if (call.get_fan_mode().has_value()) {
     ClimateFanMode fan_mode = call.get_fan_mode().value();
     switch (fan_mode) {
       case ClimateFanMode::CLIMATE_FAN_AUTO:
