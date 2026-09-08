@@ -11,7 +11,7 @@ namespace esphome::sharp_ac {
 
 struct StringToUint8 {
   const char *str;
-  const uint8_t value;
+  const FanMode value;
 };
 constexpr StringToUint8 CUSTOM_CLIMATE_FAN_MODES_BY_STR[] = {
     {"Auto", FanMode::FAN_AUTO},         {"Low", FanMode::FAN_MID},       {"Medium", FanMode::FAN_MID},
