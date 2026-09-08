@@ -216,7 +216,7 @@ void SharpAc::control(const ClimateCall &call) {
     std::string custom_fan_mode = call.get_custom_fan_mode();   
     for (const auto &mode_entry : CUSTOM_CLIMATE_FAN_MODES_BY_STR) {
       if (custom_fan_mode == mode_entry.str) {
-        this->control_fan(mode_entry.value);
+        this->core_->control_fan(mode_entry.value);
         fanmode_set = true;
       }
     }
