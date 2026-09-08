@@ -45,6 +45,7 @@ ClimateTraits SharpAc::traits() {
   traits.add_supported_fan_mode(ClimateFanMode::CLIMATE_FAN_LOW);
   traits.add_supported_fan_mode(ClimateFanMode::CLIMATE_FAN_MEDIUM);
   traits.add_supported_fan_mode(ClimateFanMode::CLIMATE_FAN_HIGH);
+  traits.set_supported_custom_presets({"Highest"});
 
   traits.add_supported_mode(ClimateMode::CLIMATE_MODE_OFF);
   traits.add_supported_mode(ClimateMode::CLIMATE_MODE_COOL);
@@ -236,8 +237,6 @@ void SharpAc::control(const ClimateCall &call) {
       case ClimateFanMode::CLIMATE_FAN_HIGH:
         this->core_->control_fan(FanMode::FAN_HIGH);
         break;
-      case ClimateFanMode::CLIMATE_FAN_FOCUS:  
-        break;
       default:
             ESP_LOGE("sharp_ac", "Unsupported fan mode: %d", (int) fan_mode);         
     }
@@ -290,8 +289,8 @@ void SharpAc::set_vane_vertical(SwingVertical val) { this->core_->set_vane_verti
 
 void SharpAc::setup() {
   this->core_->setup();
-  std::vector<const char *> custom_modes = {"Highest"};
-  this->set_supported_custom_fan_modes(custom_modes);
+  //std::vector<const char *> custom_modes = {"Highest"};
+  //this->set_supported_custom_fan_modes(custom_modes);
   if (this->connection_status_sensor_ != nullptr) {
     this->connection_status_sensor_->publish_state("Disconnected");
   }
