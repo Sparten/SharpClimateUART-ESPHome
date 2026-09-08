@@ -41,6 +41,11 @@ ClimateTraits SharpAc::traits() {
   traits.set_visual_max_temperature(30);
   traits.set_visual_temperature_step(1.0);
 
+  traits.add_supported_fan_mode(ClimateFanMode::CLIMATE_FAN_AUTO);
+  traits.add_supported_fan_mode(ClimateFanMode::CLIMATE_FAN_LOW);
+  traits.add_supported_fan_mode(ClimateFanMode::CLIMATE_FAN_MEDIUM);
+  traits.add_supported_fan_mode(ClimateFanMode::CLIMATE_FAN_HIGH);
+
   traits.add_supported_mode(ClimateMode::CLIMATE_MODE_OFF);
   traits.add_supported_mode(ClimateMode::CLIMATE_MODE_COOL);
   traits.add_supported_mode(ClimateMode::CLIMATE_MODE_HEAT);
@@ -78,16 +83,16 @@ void SharpAc::publish_update() {
 
   switch (state.fan) {
     case FanMode::FAN_AUTO:
-    this->set_custom_fan_mode_("Auto");
+      this->fan_mode = ClimateFanMode::CLIMATE_FAN_AUTO;
       break;
     case FanMode::FAN_LOW:
-      this->set_custom_fan_mode_("Low");
+      this->fan_mode = ClimateFanMode::CLIMATE_FAN_LOW;
       break;
     case FanMode::FAN_MID:
-      this->set_custom_fan_mode_("Medium");
+      this->fan_mode = ClimateFanMode::CLIMATE_FAN_MEDIUM;
       break;
     case FanMode::FAN_HIGH:
-      this->set_custom_fan_mode_("High");
+      this->fan_mode = ClimateFanMode::CLIMATE_FAN_HIGH;
       break;
     case FanMode::FAN_HIGHEST:
       this->set_custom_fan_mode_("highest");
@@ -212,19 +217,32 @@ void SharpAc::control(const ClimateCall &call) {
     this->core_->control_temperature((int) temp);
   }
   if(call.has_custom_fan_mode()) {
-    std::string mode = call.get_custom_fan_mode();
-    if (mode == "Auto")
-      this->core_->control_fan(FanMode::FAN_AUTO);                           
-    if (mode == "Low")
-      this->core_->control_fan(FanMode::FAN_LOW);
-    if (mode == "Medium")
-      this->core_->control_fan(FanMode::FAN_MID);
-    if (mode == "High")
-      this->core_->control_fan(FanMode::FAN_HIGH);
-    if (mode == "Highest")
+    std::string custom_fan = call.get_custom_fan_mode();
+    if (custom_fan == "Highest"){
       this->core_->control_fan(FanMode::FAN_HIGHEST);
+    }
+  }else if (call.get_fan_mode().has_value()) {
+    ClimateFanMode fan_mode = call.get_fan_mode().value();
+    switch (fan_mode) {
+      case ClimateFanMode::CLIMATE_FAN_AUTO:
+        this->core_->control_fan(FanMode::FAN_AUTO);
+        break;
+      case ClimateFanMode::CLIMATE_FAN_LOW:
+        this->core_->control_fan(FanMode::FAN_LOW);
+        break;
+      case ClimateFanMode::CLIMATE_FAN_MEDIUM:
+        this->core_->control_fan(FanMode::FAN_MID);
+        break;
+      case ClimateFanMode::CLIMATE_FAN_HIGH:
+        this->core_->control_fan(FanMode::FAN_HIGH);
+        break;
+      case ClimateFanMode::CLIMATE_FAN_FOCUS:  
+        break;
+      default:
+            ESP_LOGE("sharp_ac", "Unsupported fan mode: %d", (int) fan_mode);         
+    }
   }
-  
+
   if (call.get_preset().has_value()) {
     ClimatePreset preset = call.get_preset().value();
     switch (preset) {
@@ -272,8 +290,8 @@ void SharpAc::set_vane_vertical(SwingVertical val) { this->core_->set_vane_verti
 
 void SharpAc::setup() {
   this->core_->setup();
-  static constexpr const char *const FAN_MODES[] = {"Auto", "Low", "Medium", "High", "Highest"};
-  this->set_supported_custom_fan_modes(FAN_MODES);
+  std::vector<const char *> custom_modes = {"Highest"};
+  this->set_supported_custom_fan_modes(custom_modes);
   if (this->connection_status_sensor_ != nullptr) {
     this->connection_status_sensor_->publish_state("Disconnected");
   }
