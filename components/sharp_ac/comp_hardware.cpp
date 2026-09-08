@@ -221,16 +221,16 @@ void SharpAc::control(const ClimateCall &call) {
     this->core_->control_temperature((int) temp);
   }
   if(call.has_custom_fan_mode()) {
-    const char *mode = call.get_custom_fan_mode();
-    if (strcmp(mode, "Auto") == 0)
+    std::string mode = call.get_custom_fan_mode();
+    if (mode == "Auto")
       this->core_->control_fan(FanMode::FAN_AUTO);                           
-    if (strcmp(mode, "Low") == 0)
+    if (mode == "Low")
       this->core_->control_fan(FanMode::FAN_LOW);
-    if (strcmp(mode, "Medium") == 0)
+    if (mode == "Medium")
       this->core_->control_fan(FanMode::FAN_MID);
-    if (strcmp(mode, "High") == 0)
+    if (mode == "High")
       this->core_->control_fan(FanMode::FAN_HIGH);
-    if (strcmp(mode, "Highest") == 0)
+    if (mode == "Highest")
       this->core_->control_fan(FanMode::FAN_HIGHEST);
     }
   
