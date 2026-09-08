@@ -19,7 +19,7 @@ enum class Preset {
   FULLPOWER = 0x2,
 };
 
-enum class FanMode : uint8_t { FAN_LOW = 0x4, FAN_MID = 0x3, FAN_HIGH = 0x5, FAN_HIGHEST = 0x7, FAN_AUTO = 0x2 };
+enum FanMode : uint8_t { FAN_LOW = 0x4, FAN_MID = 0x3, FAN_HIGH = 0x5, FAN_HIGHEST = 0x7, FAN_AUTO = 0x2 };
 
 enum class SwingVertical {
   SWING = 0xF,
