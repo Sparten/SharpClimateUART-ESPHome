@@ -45,7 +45,7 @@ ClimateTraits SharpAc::traits() {
   traits.add_supported_fan_mode(ClimateFanMode::CLIMATE_FAN_LOW);
   traits.add_supported_fan_mode(ClimateFanMode::CLIMATE_FAN_MEDIUM);
   traits.add_supported_fan_mode(ClimateFanMode::CLIMATE_FAN_HIGH);
-  traits.set_supported_custom_presets({"Highest"});
+  traits.set_supported_custom_fan_modes({"Highest"});
 
   traits.add_supported_mode(ClimateMode::CLIMATE_MODE_OFF);
   traits.add_supported_mode(ClimateMode::CLIMATE_MODE_COOL);
