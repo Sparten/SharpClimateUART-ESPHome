@@ -52,7 +52,8 @@ ClimateTraits SharpAc::traits() {
   traits.add_supported_mode(ClimateMode::CLIMATE_MODE_HEAT);
   traits.add_supported_mode(ClimateMode::CLIMATE_MODE_DRY);
   traits.add_supported_mode(ClimateMode::CLIMATE_MODE_FAN_ONLY);
-
+  traits.add_supported_mode(ClimateMode::CLIMATE_MODE_HEAT_COOL);
+  
   traits.add_supported_preset(ClimatePreset::CLIMATE_PRESET_ECO);
   traits.add_supported_preset(ClimatePreset::CLIMATE_PRESET_BOOST);
   traits.add_supported_preset(ClimatePreset::CLIMATE_PRESET_NONE);
