@@ -259,6 +259,7 @@ void SharpCommandFrame::set_data(SharpState *state) {
       this->data_[4] = 0x00;
       break;
     }
+    case PowerMode::AUTO:
     case PowerMode::COOL:
     case PowerMode::HEAT: {
       this->data_[4] = 0xC0 | (state->temperature - 15);
