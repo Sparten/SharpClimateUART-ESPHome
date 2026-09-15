@@ -53,7 +53,7 @@ ClimateTraits SharpAc::traits() {
   traits.add_supported_mode(ClimateMode::CLIMATE_MODE_DRY);
   traits.add_supported_mode(ClimateMode::CLIMATE_MODE_FAN_ONLY);
   traits.add_supported_mode(ClimateMode::CLIMATE_MODE_HEAT_COOL);
-  
+
   traits.add_supported_preset(ClimatePreset::CLIMATE_PRESET_ECO);
   traits.add_supported_preset(ClimatePreset::CLIMATE_PRESET_BOOST);
   traits.add_supported_preset(ClimatePreset::CLIMATE_PRESET_NONE);
@@ -115,6 +115,9 @@ void SharpAc::publish_update() {
       break;
     case PowerMode::DRY:
       this->mode = ClimateMode::CLIMATE_MODE_DRY;
+      break;
+    case PowerMode::AUTO:
+      this->mode = ClimateMode::CLIMATE_MODE_HEAT_COOL;
       break;
     default:
       ESP_LOGD("sharp_ac", "UNKNOWN MODE");
