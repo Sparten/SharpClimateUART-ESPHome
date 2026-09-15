@@ -4,7 +4,7 @@ namespace esphome::sharp_ac {
 
 static constexpr int ION_MODE = 0x80;
 
-enum class PowerMode { HEAT = 0x1, COOL = 0x2, DRY = 0x3, FAN = 0x4 };
+enum class PowerMode { AUTO = 0x0, HEAT = 0x1, COOL = 0x2, DRY = 0x3, FAN = 0x4 };
 
 enum class SwingHorizontal {
   SWING = 0xF,

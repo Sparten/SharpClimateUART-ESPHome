@@ -185,12 +185,13 @@ void SharpAc::control(const ClimateCall &call) {
   if (call.get_mode().has_value()) {
     ClimateMode new_mode = call.get_mode().value();
     ESP_LOGD("sharp_ac", "Setting mode: %d (%s)", (int) new_mode,
-             new_mode == ClimateMode::CLIMATE_MODE_OFF        ? "OFF"
-             : new_mode == ClimateMode::CLIMATE_MODE_COOL     ? "COOL"
-             : new_mode == ClimateMode::CLIMATE_MODE_HEAT     ? "HEAT"
-             : new_mode == ClimateMode::CLIMATE_MODE_DRY      ? "DRY"
-             : new_mode == ClimateMode::CLIMATE_MODE_FAN_ONLY ? "FAN"
-                                                              : "UNKNOWN");
+             new_mode == ClimateMode::CLIMATE_MODE_OFF         ? "OFF"
+             : new_mode == ClimateMode::CLIMATE_MODE_COOL      ? "COOL"
+             : new_mode == ClimateMode::CLIMATE_MODE_HEAT      ? "HEAT"
+             : new_mode == ClimateMode::CLIMATE_MODE_DRY       ? "DRY"
+             : new_mode == ClimateMode::CLIMATE_MODE_FAN_ONLY  ? "FAN"
+             : new_mode == ClimateMode::CLIMATE_MODE_HEAT_COOL ? "AUTO"
+                                                               : "UNKNOWN");
 
     switch (new_mode) {
       case ClimateMode::CLIMATE_MODE_OFF:
@@ -207,6 +208,9 @@ void SharpAc::control(const ClimateCall &call) {
         break;
       case ClimateMode::CLIMATE_MODE_FAN_ONLY:
         this->core_->control_mode(PowerMode::FAN, true);
+        break;
+      case ClimateMode::CLIMATE_MODE_HEAT_COOL:
+        this->core_->control_mode(PowerMode::AUTO, true);
         break;
       default:
         ESP_LOGE("sharp_ac", "Unsupported mode: %d", (int) new_mode);
