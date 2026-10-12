@@ -103,7 +103,7 @@ class SharpAc : public climate::Climate, public uart::UARTDevice, public Compone
 
   void update_connection_status(int status);
   void trigger_reconnect();
-
+  static const char *const HIGHEST;
  private:
   std::unique_ptr<ESPHomeHardwareInterface> hardware_interface_;
   std::unique_ptr<ESPHomeStateCallback> state_callback_;

@@ -9,6 +9,7 @@
 
 namespace esphome::sharp_ac {
 
+const char *const SharpAc::HIGHEST = "Highest";
 void ESPHomeStateCallback::on_state_update() {
   if (this->sharp_ac_ != nullptr) {
     this->sharp_ac_->publish_update();
@@ -97,7 +98,7 @@ void SharpAc::publish_update() {
       this->fan_mode = ClimateFanMode::CLIMATE_FAN_HIGH;
       break;
     case FanMode::FAN_HIGHEST:
-      this->fan_mode = ClimateFanMode::CLIMATE_FAN_FOCUS;
+      this->set_custom_fan_mode_(HIGHEST);// = ClimateFanMode::CLIMATE_FAN_FOCUS;
       break;
     default:
       ESP_LOGD("sharp_ac", "UNKNOWN FAN MODE");
@@ -225,13 +226,15 @@ void SharpAc::control(const ClimateCall &call) {
     float temp = call.get_target_temperature().value();
     this->core_->control_temperature((int) temp);
   }
-  /*if(call.has_custom_fan_mode()) {
+  bool costum_fanmode = false;
+  if(call.has_custom_fan_mode()) {
     std::string custom_fan = call.get_custom_fan_mode();
     if (custom_fan == "Highest"){
       this->core_->control_fan(FanMode::FAN_HIGHEST);
+      costum_fanmode = true;
     }
-  }else */
-  if (call.get_fan_mode().has_value()) {
+  }
+  if (call.get_fan_mode().has_value() && costum_fanmode == false) {
     ClimateFanMode fan_mode = call.get_fan_mode().value();
     switch (fan_mode) {
       case ClimateFanMode::CLIMATE_FAN_AUTO:
@@ -246,9 +249,9 @@ void SharpAc::control(const ClimateCall &call) {
       case ClimateFanMode::CLIMATE_FAN_HIGH:
         this->core_->control_fan(FanMode::FAN_HIGH);
         break;
-      case ClimateFanMode::CLIMATE_FAN_FOCUS:
-        this->core_->control_fan(FanMode::FAN_HIGHEST);
-        break;
+      //case ClimateFanMode::CLIMATE_FAN_FOCUS:
+        //this->core_->control_fan(FanMode::FAN_HIGHEST);
+        //break;
       default:
             ESP_LOGE("sharp_ac", "Unsupported fan mode: %d", (int) fan_mode);         
     }
@@ -302,7 +305,7 @@ void SharpAc::set_vane_vertical(SwingVertical val) { this->core_->set_vane_verti
 void SharpAc::setup() {
   this->core_->setup();
   //std::vector<const char *> custom_modes = {"Highest"};
-  //this->set_supported_custom_fan_modes(custom_modes);
+  this->set_supported_custom_fan_modes(SharpAc::HIGHEST);
   if (this->connection_status_sensor_ != nullptr) {
     this->connection_status_sensor_->publish_state("Disconnected");
   }
